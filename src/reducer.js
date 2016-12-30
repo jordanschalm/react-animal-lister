@@ -1,26 +1,27 @@
 import ActionTypes from './action-types';
-import Immutable from 'immutable';
 
-const initialState = Immutable.fromJS({
+const initialState = {
 	textInput: '',
 	selectedIndex: 0,
-	animals: ['Bear']
-});
+	animals: []
+};
 
+// Redux reducer to add and select animals.
 const reducer = (state = initialState, {type, payload}) => {
-	console.log(state.toJS());
+	const nextState = Object.assign({}, state);
 	switch (type) {
 	case ActionTypes.TEXT_INPUT_UPDATE:
-		return state.set('textInput', payload);
+		nextState.textInput = payload;
+		return nextState;
 	case ActionTypes.ANIMAL_SELECT:
-		return state.set('selectedIndex', payload);
+		nextState.selectedIndex = payload;
+		return nextState;
 	case ActionTypes.ANIMAL_ADD:
-		return state
-			.set('textInput', '')
-			.set('animals', state.get('animals').push(payload));
+		nextState.textInput = '';
+		nextState.animals = [...nextState.animals, payload];
+		return nextState;
 	default:
-		console.log('default');
-		return state;
+		return nextState;
 	}
 }
 

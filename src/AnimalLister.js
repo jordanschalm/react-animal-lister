@@ -10,9 +10,13 @@ export default class AnimalLister extends Component {
 	state = {textInput: ''};
 
 	static propTypes = {
+		// List of animals to appear in the list
 		animals: PropTypes.arrayOf(PropTypes.string),
+		// Dispatches a Redux action
 		dispatch: PropTypes.func,
+		// Index of selected animal
 		selectedIndex: PropTypes.number,
+		// Value of text input field
 		textInput: PropTypes.string
 	};
 
@@ -28,13 +32,13 @@ export default class AnimalLister extends Component {
 		return (
 			<div
 				className="list-container"
-				onKeyUp={this._handleKeyPress}>
+				onKeyDown={this._handleKeyPress}>
 				<h1 className="list-header">Animals</h1>
-				<div className="scrollable">
+				<div className="list-body">
 					{
 						animals.map((animal, i) => (
 							<a
-								className={`list-item ${selectedIndex === i ? 'selected' : ''}`}
+								className={`list-item${selectedIndex === i ? ' selected' : ''}`}
 								key={i}
 								onClick={() => this._handleSelectAnimal(i)}>
 								{animal}
@@ -44,30 +48,29 @@ export default class AnimalLister extends Component {
 				</div>
 				<div className="list-footer">
 					<input
+						className="list-input"
+						autoFocus={true}
+						onChange={this._handleChangeTextInput}
+						ref={this._alwaysFocusInput}
 						type="text"
-						value={textInput}
-						onChange={this._handleChangeTextInput} />
+						value={textInput} />
 				</div>
 			</div>
 		)
 	}
 
-	_handleSelectAnimal = (index) => {
-		this.props.dispatch(selectAnimal(index))
-	}
-
-	// TODO
+	// Handles up/down key movement through the list and adding a new animal with enter.
 	_handleKeyPress = (event) => {
 		const { animals, dispatch, selectedIndex, textInput } = this.props;
 		switch (event.which) {
-		case UP_KEY:
+		case DOWN_KEY:
 			if (selectedIndex === animals.length - 1) {
 				dispatch(selectAnimal(0));
 			} else {
 				dispatch(selectAnimal(selectedIndex+1));
 			}
 			break;
-		case DOWN_KEY:
+		case UP_KEY:
 			if (selectedIndex === 0) {
 				dispatch(selectAnimal(animals.length-1));
 			} else {
@@ -82,7 +85,18 @@ export default class AnimalLister extends Component {
 		}
 	}
 
+	_handleSelectAnimal = (index) => {
+		this.props.dispatch(selectAnimal(index))
+	}
+
+
 	_handleChangeTextInput = (event) => {
 		this.props.dispatch(updateTextInput(event.target.value));
+	}
+
+	// Kepp the input focussed all the time so that we always capture keyboard events
+	// in this component.
+	_alwaysFocusInput = (el) => {
+		el.addEventListener('blur', el.focus);
 	}
 }

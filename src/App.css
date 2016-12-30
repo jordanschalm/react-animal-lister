@@ -1,5 +1,6 @@
 .container {
   height: 100%;
+  padding: 0 5%;
   display: flex;
   flex-direction: row;
 }
@@ -13,5 +14,7 @@
 }
 
 .right {
+  display: flex;
   flex-grow: 2;
+  align-items: stretch;
 }

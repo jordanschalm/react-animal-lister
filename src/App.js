@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import AnimalLister from './AnimalLister';
-import Immutable from 'immutable';
 import Reducer from './reducer';
 import './App.css';
 
-class App extends Component {
-  state = Reducer(undefined, {}).toJS();
+export default class App extends Component {
+  // Initialize with the reducer's inital state
+  state = Reducer(undefined, {});
 
   render() {
-    console.log(this.state);
     const { animals, selectedIndex, textInput } = this.state;
     return (
       <div className="container">
@@ -29,10 +28,9 @@ class App extends Component {
     );
   }
 
+  // This essentially does the same thing as Redux's dispatch method, just using
+  // this component's state rather than external state.
   dispatch = (action) => {
-    this.setState(Reducer(Immutable.fromJS(this.state), action).toJS());
-    console.log(this.state);
+    this.setState(Reducer(this.state, action));
   };
 }
-
-export default App;
